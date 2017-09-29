@@ -1,0 +1,81 @@
+apply plugin: "java"
+apply plugin: "eclipse"
+apply plugin: "eclipse-wtp"
+apply plugin: "war"
+apply plugin: "org.springframework.boot"
+apply from: "https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin"
+
+eclipse {
+    project {
+        name = 'wisdom-health'
+        comment = 'wisdom-health BACKEND project.'
+    }
+    jdt {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8    
+    }
+    wtp {
+        component {
+            contextPath = 'wisdom-health'
+            deployName = 'wisdom-health'
+            resource sourcePath: 'src', deployPath: '/WEB-INF/classes'
+            resource sourcePath: 'WebContent', deployPath: '/'
+        }
+    }
+}
+
+buildscript {
+    repositories {
+    	jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE")
+    }
+}
+
+dependencies {
+	compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
+	compile group: 'org.json', name: 'json', version: '20160810'
+
+    compile group: 'org.springframework', name: 'spring-web', version: '4.3.7.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.5.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '1.5.2.RELEASE'
+	compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.13'
+	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
+ 	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.6.1'
+ 	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+ 	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.6.1'
+	compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.5.0'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	compile group: 'commons-lang', name: 'commons-lang', version: '2.2'
+    	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
+	
+
+    
+
+    providedCompile "org.apache.tomcat:tomcat-catalina:8.0.41"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src"]
+        } 
+        resources { 
+        includes = ["**/*.properties"]
+        srcDirs = ["src"] 
+        }
+    }
+}
+
+webAppDirName = "WebContent"
+
+gretty {
+	servletContainer "tomcat8"
+	httpPort 8080
+	contextPath "/wisdom-health"
+	contextConfigFile "WebContent/WEB-INF/web.xml"
+	extraResourceBase "WebContent/"
+}
